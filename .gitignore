@@ -60,3 +60,19 @@ __pycache__/
 /build/
 /dist/
 
+# local environment / secrets
+.env
+.env.* 
+secrets.json
+
+# python
+venv/
+__pycache__/
+*.pyc
+
+# logs
+scripts/scrape.log
+
+# temporary files
+*.tmp
+EOF
