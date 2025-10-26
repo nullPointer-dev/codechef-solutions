@@ -39,3 +39,24 @@
 
 # debug information files
 *.dwo
+
+# compiled objects
+*.o
+*.out
+*.exe
+
+# editors and IDEs
+.vscode/
+*.swp
+*.swo
+.idea/
+
+# python env
+venv/
+__pycache__/
+*.pyc
+
+# build artifacts
+/build/
+/dist/
+
