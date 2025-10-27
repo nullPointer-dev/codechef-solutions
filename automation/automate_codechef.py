@@ -47,7 +47,22 @@ def create_problem_folder(rating, link, lang_ext):
 
 # CONFIG
 USERNAME = "nullPointer-dev"
-SESSION_COOKIE = "<AKEyXzUMmcORsdCtXOg6c6aWsR3_EDwB2F_dhx7Iz2YrH6cE2vWl7vQuksPQ4L6CMUgzM6v3Q2rN>"
+COOKIES = {
+    "cf_clearance":"FMH9zSmYFIwnVFbPUY2nkBJBp1.b3tgPAFetb_q79h8-1757257010-1.2.1.1-ExVwRiVAhEXseDCTCdwHHynynPKtW6qSNoT2I6n4BUca.fU1th66sIjSpDKovT8Cly_VMwoufYfquw6crgxrGNHpSOzWleXAcLEsQmoCcqxeALBe18KmqczjL18V8.O.dcrFiFLh034QDkwXfnXwPfSdGYqv7k_tWTV1QD_DGV7CiKrwneWVE6sJsZdiV4fPKvkEnnwoCo2POSPcPJ7zleXsJquvpaIBO0TmWXw_SVA",
+    "_gcl_au" : "1.1.2019424725.1754759910.374134643.1757585706.1757585865",
+    "uid" : "5963971",
+    "SESS93b6022d778ee317bf48f7dbffe03173" : "4df508a42e823e603045feb97d2270e6",
+    "Authorization" : "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjb2RlY2hlZi5jb20iLCJzdWIiOiI1OTYzOTcxIiwidXNlcm5hbWUiOiJzaGFycF9zbm93XzIxIiwiaWF0IjoxNzYwOTM1MTMzLCJuYmYiOjE3NjA5MzUxMzMsImV4cCI6MTc2MjkyOTUzM30.ZsOT_dM-U6Ml548hSBm1ahNyEwldEb8NGSoJoDgTutg",
+    "_gid" : "GA1.2.338881360.1761102637",
+    "rzp_unified_session_id" : "RYRoMnMMy0NQdx",
+    "_clck" : "1ujwq8j%5E2%5Eg0i%5E0%5E2049",
+    "_clsk" : "nq1olt%5E1761557344713%5E1%5E1%5Ej.clarity.ms%2Fcollect", 
+    "_ga" : "GA1.1.80026328.1754759910",
+    "TawkConnectionTime" : "0",
+    "twk_uuid_668d037a7a36f5aaec9634a5" : "%7B%22uuid%22%3A%221.SwyUS5v2sJunkWXTanaXRyklw7rPuUavAgxuIHsuRsYeCKVwpH7f6YPXkCPeOk5QBwRtmhYE2TTIl08oyvBJc71f3lp7q3a3EpcjhxQZW9djLZLz4Aq3N%22%2C%22version%22%3A3%2C%22domain%22%3A%22codechef.com%22%2C%22ts%22%3A1761558897937%7D",
+    "_ga_C8RQQ7NY18": "GS2.1.s1761557249$o157$g1$t1761558898$j59$l0$h0",
+}
+
 REPO_PATH = r"C:\Users\Sashank\Documents\codechef-solutions"  # root of your repo
 
 # Create a requests session
@@ -71,7 +86,7 @@ def scrape_solved_problems():
 
     soup = BeautifulSoup(response.text, "html.parser")
     print(soup.prettify()[:2000])
-    
+
     problems = []
     # Find the section that contains solved problems
     # NOTE: Adjust selectors according to actual HTML structure
