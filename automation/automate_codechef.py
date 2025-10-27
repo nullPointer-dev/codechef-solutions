@@ -9,6 +9,7 @@ from datetime import datetime
 # --- CONFIG ---
 REPO_PATH = r"C:\Users\Sashank\Documents\codechef-solutions"  # root of your repo
 SOLVED_DIR = os.path.join(REPO_PATH, "solved problems")
+PROFILE_URL = "https://www.codechef.com/users/shary_snow_21"
 
 def log(msg):
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] {msg}")
@@ -46,7 +47,8 @@ def create_problem_folder(rating, link, lang_ext):
         log(f"Solution file already exists: {solution_file}")
 
 # CONFIG
-USERNAME = "nullPointer-dev"
+USERNAME = "shary_snow_21"
+PROFILE_URL = f"https://www.codechef.com/users/{USERNAME}"
 COOKIES = {
     "cf_clearance":"FMH9zSmYFIwnVFbPUY2nkBJBp1.b3tgPAFetb_q79h8-1757257010-1.2.1.1-ExVwRiVAhEXseDCTCdwHHynynPKtW6qSNoT2I6n4BUca.fU1th66sIjSpDKovT8Cly_VMwoufYfquw6crgxrGNHpSOzWleXAcLEsQmoCcqxeALBe18KmqczjL18V8.O.dcrFiFLh034QDkwXfnXwPfSdGYqv7k_tWTV1QD_DGV7CiKrwneWVE6sJsZdiV4fPKvkEnnwoCo2POSPcPJ7zleXsJquvpaIBO0TmWXw_SVA",
     "_gcl_au" : "1.1.2019424725.1754759910.374134643.1757585706.1757585865",
@@ -63,7 +65,7 @@ COOKIES = {
     "_ga_C8RQQ7NY18": "GS2.1.s1761557249$o157$g1$t1761558898$j59$l0$h0",
 }
 
-REPO_PATH = r"C:\Users\Sashank\Documents\codechef-solutions"  # root of your repo
+
 
 # Create a requests session
 session = requests.Session()
@@ -79,31 +81,50 @@ from bs4 import BeautifulSoup
 
 def scrape_solved_problems():
     url = f"https://www.codechef.com/users/{USERNAME}"
-    response = session.get(url)
+    HEADERS = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                      "AppleWebKit/537.36 (KHTML, like Gecko) "
+                      "Chrome/129.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Referer": "https://www.codechef.com/",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+    }
+
+    response = session.get(url, headers=HEADERS, cookies=COOKIES)
+    print(f"🔍 HTTP Status: {response.status_code}")
     if response.status_code != 200:
         print(f"Failed to fetch profile: {response.status_code}")
         return []
 
     soup = BeautifulSoup(response.text, "html.parser")
-    print(soup.prettify()[:2000])
+    title = soup.title.string if soup.title else "No title"
+    print(f"🧠 Page title: {title}")
 
-    problems = []
-    # Find the section that contains solved problems
-    # NOTE: Adjust selectors according to actual HTML structure
-    table = soup.find("div", {"class": "dataTable"})
-    if not table:
+    # Check if we are logged in
+    if "CodeChef - Learn and Practice" in title:
+        print("⚠️ Not logged in. Update cookies.")
+        return []
+
+    section = soup.find("section", {"class": "rating-data-section problems-solved"})
+    if not section:
         print("Could not find solved problems section.")
         return []
 
-    for link_tag in table.find_all("a"):
-        problem_link = "https://www.codechef.com" + link_tag.get("href")
+    problems = []
+    for link_tag in section.find_all("a"):
+        href = link_tag.get("href")
+        if not href or not href.startswith("/problems/"):
+            continue
+        problem_link = f"https://www.codechef.com{href}"
         problem_name = link_tag.text.strip()
-        # Extract rating from problem name if included (like "823 START01")
-        rating = problem_name.split()[0]  # assumes first part is numeric
+        rating = "unrated"
         problems.append({"rating": rating, "link": problem_link})
 
-    print(f"Found {len(problems)} solved problems.")
+    print(f"✅ Found {len(problems)} problems.")
     return problems
+
 
 def git_commit_and_push(commit_msg="Add new solved problems"):
     repo = Repo(REPO_PATH)       # REPO_PATH should point to your repo root
