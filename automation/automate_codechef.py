@@ -80,50 +80,29 @@ session.headers.update({
 from bs4 import BeautifulSoup
 
 def scrape_solved_problems():
-    url = f"https://www.codechef.com/users/{USERNAME}"
-    HEADERS = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                      "AppleWebKit/537.36 (KHTML, like Gecko) "
-                      "Chrome/129.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Referer": "https://www.codechef.com/",
-        "Connection": "keep-alive",
-        "Upgrade-Insecure-Requests": "1",
-    }
+    api_url = f"https://www.codechef.com/api/user/{USERNAME}"
+    response = requests.get(api_url, headers={
+        "User-Agent": "Mozilla/5.0",
+        "Accept": "application/json",
+    }, cookies=COOKIES)
 
-    response = session.get(url, headers=HEADERS, cookies=COOKIES)
-    print(f"🔍 HTTP Status: {response.status_code}")
     if response.status_code != 200:
-        print(f"Failed to fetch profile: {response.status_code}")
+        print("❌ Failed to fetch data:", response.status_code)
         return []
 
-    soup = BeautifulSoup(response.text, "html.parser")
-    title = soup.title.string if soup.title else "No title"
-    print(f"🧠 Page title: {title}")
-
-    # Check if we are logged in
-    if "CodeChef - Learn and Practice" in title:
-        print("⚠️ Not logged in. Update cookies.")
-        return []
-
-    section = soup.find("section", {"class": "rating-data-section problems-solved"})
-    if not section:
-        print("Could not find solved problems section.")
-        return []
-
+    data = response.json()
+    solved = data.get("fully_solved", {}).get("Practice", [])
     problems = []
-    for link_tag in section.find_all("a"):
-        href = link_tag.get("href")
-        if not href or not href.startswith("/problems/"):
-            continue
-        problem_link = f"https://www.codechef.com{href}"
-        problem_name = link_tag.text.strip()
-        rating = "unrated"
-        problems.append({"rating": rating, "link": problem_link})
 
-    print(f"✅ Found {len(problems)} problems.")
+    for p in solved:
+        code = p["problem_code"]
+        link = f"https://www.codechef.com/problems/{code}"
+        rating = str(p.get("problem_rating", "unrated"))
+        problems.append({"rating": rating, "link": link})
+
+    print(f"✅ Found {len(problems)} solved problems.")
     return problems
+
 
 
 def git_commit_and_push(commit_msg="Add new solved problems"):
