@@ -7,7 +7,7 @@ import os
 from datetime import datetime
 
 # --- CONFIG ---
-REPO_PATH = os.path.abspath("..")  # root of your repo
+REPO_PATH = r"C:\Users\Sashank\Documents\codechef-solutions"  # root of your repo
 SOLVED_DIR = os.path.join(REPO_PATH, "solved problems")
 
 def log(msg):
@@ -48,7 +48,7 @@ def create_problem_folder(rating, link, lang_ext):
 # CONFIG
 USERNAME = "nullPointer-dev"
 SESSION_COOKIE = "<AKEyXzUMmcORsdCtXOg6c6aWsR3_EDwB2F_dhx7Iz2YrH6cE2vWl7vQuksPQ4L6CMUgzM6v3Q2rN>"
-REPO_PATH = os.path.abspath("..")  # root of your repo
+REPO_PATH = r"C:\Users\Sashank\Documents\codechef-solutions"  # root of your repo
 
 # Create a requests session
 session = requests.Session()
@@ -74,7 +74,7 @@ def scrape_solved_problems():
     problems = []
     # Find the section that contains solved problems
     # NOTE: Adjust selectors according to actual HTML structure
-    table = soup.find("section", {"class": "rating-data-section problems-solved"})
+    table = soup.find("div", {"class": "dataTable"})
     if not table:
         print("Could not find solved problems section.")
         return []
@@ -107,7 +107,9 @@ def main():
     ensure_dirs()
     
     problems = scrape_solved_problems()
+    print(f"✅ Found {len(problems)} problems.") 
     for p in problems:
+        print(f"→ {p['rating']}: {p['link']}")
         create_problem_folder(p["rating"], p["link"], "py")  # or your language choice
 
     # Auto commit & push after creating folders
