@@ -70,7 +70,8 @@ def scrape_solved_problems():
         return []
 
     soup = BeautifulSoup(response.text, "html.parser")
-
+    print(soup.prettify()[:2000])
+    
     problems = []
     # Find the section that contains solved problems
     # NOTE: Adjust selectors according to actual HTML structure
